@@ -19,18 +19,14 @@ class Database {
     }
 
     /**
-     * Get an array of 100 (user_id, count) rows
-     * ordered by count descending.
+     * Run a database query and return the result as
+     * a list of associative arrays.
      */
-    public function count_tweets_by_user()
-    {
+    public function query($querystring) {
+
         //Run any sql query like this
         //More: http://php.net/manual/en/mysqli.query.php
-        $result = $this->db->query("SELECT user_id, COUNT(*) as count
-                              FROM tweets
-                              GROUP BY user_id
-                              ORDER BY count DESC
-                              LIMIT 100");
+        $result = $this->db->query($querystring);
 
         //$result is a mysqli_result object
         //More: http://php.net/manual/en/class.mysqli-result.php
@@ -41,6 +37,8 @@ class Database {
         }
 
         $data = array();
+        //Results can also be obtained as numerically indexed
+        //arrays, or field by field.
         while ($row = $result->fetch_assoc())
         {
             //Add the rows to $data
@@ -49,5 +47,4 @@ class Database {
 
         return $data;
     }
-
 }

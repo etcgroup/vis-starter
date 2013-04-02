@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<link href="css/normalize.css" rel="stylesheet" type="text/css">
+		<!-- <link href="css/default.css" rel="stylesheet" type="text/css"> -->
+		<style>
+			table { width: 80%; margin: 20px; border: 1px solid #888;}
+			td { border: 1px solid #888;}
+			th { background-color: rgba(0,0,0,0.05); border: 1px solid #888;}
+			tr:nth-child(even) { background-color: #eef;}
+		</style>
+		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="js/d3.v3.js"></script>
+		<script>
+			$(document).ready(function(){
+				console.log('ready!');
+
+
+				d3.csv("data/top_100_hashtags.csv", function(data){
+					console.log('got it!');
+					console.dir(data);
+
+					// start part 1
+					var table = d3.select('body').append('table');
+
+					var tableheader = table.append('thead');
+					tableheader.selectAll('th')
+						.data(['place'].concat(d3.keys(data[0])))
+						.enter().append('th')
+						.text(String);
+
+					var rows = table.selectAll('tr')
+						.data(data)
+						.enter().append('tr');
+
+
+					rows.selectAll('th')
+						.data(function(d,i){
+							// this must be an array of some sort...
+							// without the array brackets, it attempts to treat the string like an array...
+							return [(i+1).toString()];
+						})
+						.enter().append('th')
+						.text(String);
+
+					rows.selectAll('td')
+						.data(function(d,i){
+							return d3.values(d);
+						})
+						.enter().append('td')
+						.text(String);
+				});
+			});
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

@@ -5,31 +5,7 @@
 		<link href="css/normalize.css" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
 		<script type="text/javascript" src="js/d3.v3.js"></script>
-        <style>
-            body {
-              font: 10px sans-serif;
-            }
-
-            .axis path,
-            .axis line {
-              fill: none;
-              stroke: #000;
-              shape-rendering: crispEdges;
-            }
-
-            .bar {
-              fill: steelblue;
-              cursor: pointer;
-            }
-            .bar:hover {
-              fill: #6EA9DA;
-            }
-            
-            .bar-chart .y.axis path {
-              display: none;
-            }
-        </style>
-		<script>
+        <script>
             function barChart() {
                 var width = 600,
                     height = 400,
@@ -75,8 +51,6 @@
                         .classed("x axis", true)
                         .attr("transform", "translate(" + margins.left + "," + (margins.top + graphHeight) + ")" )
                         
-                var updateTimeline = timeline();
-                
                 //Load the data
                 d3.csv("data/top_100_hashtags.csv", function(data){
                 

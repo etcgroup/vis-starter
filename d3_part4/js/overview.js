@@ -1,4 +1,6 @@
-function overview(focusTimeline) {
+function overview() {
+    var focusTimeline = timeline();
+
     var screenWidth = $(window).width();
     var screenHeight = $(window).height();
 
@@ -63,33 +65,42 @@ function overview(focusTimeline) {
         .attr("y", -6)
         .attr("height", height + 7);
         
-    var update = function(data) {
+    var update = function(hashtag) {
+        var datafile = "data/ht_" + hashtag + ".csv";
+    
+        d3.csv(datafile, function(data) {
+            //Multiply all timestamps by 1000 for milliseconds
+            data.forEach(function(row) {
+                row.time = row.time * 1000;
+            });
             
-        var maxCount = d3.max(data, function(row){
-            return +row.count;
-        });
-        
-        var timeExtent = d3.extent(data, function(row) {
-            return +row.time;
-        });
-        
-        // update our x scale
-        x.domain( timeExtent );
+            var maxCount = d3.max(data, function(row){
+                return +row.count;
+            });
+            
+            var timeExtent = d3.extent(data, function(row) {
+                return +row.time;
+            });
+            
+            // update our x scale
+            x.domain( timeExtent );
 
-        // update our y scale
-        y.domain([0, maxCount]);
-        
-        //Update the axes
-        svg.selectAll('g.x.axis')
-            .transition()
-            .call(xAxis);
-        
-        svg.selectAll('path.area')
-            .datum(data)
-            .transition()
-            .attr('d', area);
+            // update our y scale
+            y.domain([0, maxCount]);
             
-        brushed()
+            //Update the axes
+            svg.selectAll('g.x.axis')
+                .transition()
+                .call(xAxis);
+            
+            svg.selectAll('path.area')
+                .datum(data)
+                .transition()
+                .attr('d', area);
+            
+            focusTimeline(data);
+            brushed();
+        });
     };
     
     return update;

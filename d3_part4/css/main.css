@@ -2,6 +2,10 @@ body {
   font: 10px sans-serif;
 }
 
+svg {
+    float: left;
+}
+
 .axis path,
 .axis line {
   fill: none;
@@ -23,4 +27,10 @@ body {
 
 .area {
   fill: steelblue;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
 }

@@ -1,0 +1,26 @@
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+  cursor: pointer;
+}
+.bar:hover {
+  fill: #6EA9DA;
+}
+
+.bar-chart .y.axis path {
+  display: none;
+}
+
+.area {
+  fill: steelblue;
+}

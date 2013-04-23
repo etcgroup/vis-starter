@@ -56,29 +56,54 @@ function timeline() {
     //A function that can generate a path
     var area = d3.svg.area()
         .x(function(d) { return x(d.time); })
-        .y0(graphHeight)
-        .y1(function(d) { return y(d.count); });
+        .y0(function(d) { return y(d.y0); })
+        .y1(function(d) { return y(d.y0 + d.y); });
         
-    //add a path element
-    chart.append('path')
-        .classed('area', true)
+    var stack = d3.layout.stack()
+        .values(function(d) {
+            return d.values;
+        });
+    
+    var color = d3.scale.ordinal()
+        .domain(["positive", "neutral", "negative"])
+        .range(["blue", "gray", "red"]);
         
     var update = function(data) {
         
-        var maxCount = d3.max(data, function(row){
-            return +row.count;
+        //Restructure the data as separate series
+        data = color.domain().map(function(name) {
+        
+            //Generate a series for this sentiment
+            var series = data.map(function(row) {
+                return {
+                    time: row.time,
+                    y: +row[name]
+                };
+            });
+        
+            return {
+                name: name,
+                values: series
+            }
         });
         
-        var timeExtent = d3.extent(data, function(row) {
-            return +row.time;
+        data = stack(data);
+        
+        var lastSeries = data[data.length - 1].values
+        var maxCount = d3.max(lastSeries, function(row){
+            return row.y + row.y0;
         });
         
         // update our y scale
         y.domain([0, maxCount]);
 
-        svg.selectAll('path.area')
-            .datum(data);
-        
+        //add path elements
+        chart.selectAll('path')
+            .data(data)
+            .enter()
+            .append('path')
+            .classed('area', true);
+            
         redraw();
     };
     
@@ -91,7 +116,12 @@ function timeline() {
             .call(yAxis);
         
         svg.selectAll('path.area')
-            .attr('d', area)
+            .attr('d', function(d) {
+                return area(d.values);
+            })
+            .style("fill", function(d) {
+                return color(d.name); 
+            });
     }
     
     update.domain = function(extent) {

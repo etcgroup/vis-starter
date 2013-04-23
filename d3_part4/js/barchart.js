@@ -5,9 +5,9 @@ function barChart() {
     var width = screenWidth * 0.33,
         height = 400,
         margins = {
-            top: 20,
-            right: 20,
-            bottom: 50,
+            top: 25,
+            right: 25,
+            bottom: 25,
             left: 110
         },
         graphWidth = width - margins.right - margins.left,
@@ -44,9 +44,26 @@ function barChart() {
             
     svg.append("g")
             .classed("x axis", true)
-            .attr("transform", "translate(" + margins.left + "," + (margins.top + graphHeight) + ")" )
+            .attr("transform", "translate(" + margins.left + "," + (margins.top + graphHeight) + ")" );
+    
+    var focusTimeline = timeline();
+    var contextTimeline = overview(focusTimeline);
+    
+    var update = function(hashtag) {
+        var datafile = "data/ht_" + hashtag + ".csv";
+    
+        d3.csv(datafile, function(data) {
             
-    var update = timeline();
+            //Multiply all timestamps by 1000 for milliseconds
+            data.forEach(function(row) {
+                row.time = row.time * 1000;
+            });
+            
+            //Update both timelines
+            focusTimeline(data);
+            contextTimeline(data);
+        });
+    }
     
     d3.csv("data/top_100_hashtags.csv", function(data){
         data = data.slice(0,10);
